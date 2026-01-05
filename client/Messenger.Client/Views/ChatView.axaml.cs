@@ -103,6 +103,22 @@ public partial class ChatView : UserControl
         vm.StartEditMessage(message);
     }
 
+    private void OnEditClicked(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is ChatViewModel vm && sender is MenuItem menuItem && menuItem.DataContext is Message message)
+        {
+            vm.EditCommand.Execute(message);
+        }
+    }
+
+    private void OnDeleteClicked(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is ChatViewModel vm && sender is MenuItem menuItem && menuItem.DataContext is Message message)
+        {
+            vm.DeleteCommand.Execute(message);
+        }
+    }
+
     private async void OnKeyDown(object? sender, KeyEventArgs e)
     {
         if (DataContext is ChatViewModel vm)

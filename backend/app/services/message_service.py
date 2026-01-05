@@ -95,7 +95,7 @@ class MessageService:
         await db.refresh(msg)
         return msg
 
-    async def delete_message(self, db: AsyncSession, *, message_id: int, user_id: int, for_everyone: bool) -> Message:
+    async def delete_message(self, db: AsyncSession, *, message_id: int, user_id: int, for_everyone: bool) -> dict:
         res = await db.execute(select(Message).options(selectinload(Message.files)).where(Message.id == message_id))
         msg = res.scalar_one_or_none()
         if not msg or msg.is_deleted:
@@ -103,11 +103,11 @@ class MessageService:
         if msg.sender_id != user_id and for_everyone:
             raise ValueError("Forbidden")
 
-        # Для учебного проекта: "удаление" — soft delete.
-        msg.is_deleted = True
+        chat_id = msg.chat_id
+        # Полностью удаляем сообщение из базы данных
+        await db.delete(msg)
         await db.commit()
-        await db.refresh(msg)
-        return msg
+        return {"ok": True, "message_id": message_id, "chat_id": chat_id}
 
 
 message_service = MessageService()

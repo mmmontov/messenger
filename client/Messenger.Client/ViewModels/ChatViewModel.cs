@@ -67,7 +67,7 @@ public sealed class ChatViewModel : ViewModelBase
             if (param is not Message message || message.SenderId != _userStore.Me?.Id) return;
             try
             {
-                await _api.Delete<object>($"/messages/{message.Id}", new { for_everyone = true });
+                await _chatStore.DeleteMessageAsync(message, _ws);
             }
             catch (Exception ex)
             {

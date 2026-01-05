@@ -151,6 +151,15 @@ async def chat_socket(ws: WebSocket) -> None:
                         },
                     )
 
+                elif msg_type == "delete_message":
+                    message_id = int(data.get("message_id") or 0)
+                    if message_id <= 0:
+                        await ws.send_json({"type": "error", "code": "bad_request", "message": "Invalid message_id"})
+                        continue
+                    # Удалить сообщение
+                    await message_service.delete_message(db, message_id=message_id, user_id=user.id, for_everyone=True)
+                    # Broadcast уже происходит в delete_message
+
                 else:
                     await ws.send_json({"type": "error", "code": "unknown_type", "message": "Unknown event type"})
 

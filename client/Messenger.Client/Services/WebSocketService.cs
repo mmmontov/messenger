@@ -76,7 +76,7 @@ public sealed class WebSocketService
     public async Task SendStatus(int messageId, string status)
         => await SendJson(new { type = "message.status", message_id = messageId, status });
 
-    private async Task SendJson(object obj)
+    public async Task SendJson(object obj)
     {
         if (_ws is null || _ws.State != WebSocketState.Open) return;
         var json = JsonSerializer.Serialize(obj);

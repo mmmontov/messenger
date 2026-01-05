@@ -74,3 +74,4 @@ G:\python\fullstack_projects\messenger\client\Messenger.Client\obj\Debug\net8.0\
 G:\python\fullstack_projects\messenger\client\Messenger.Client\obj\Debug\net8.0\Messenge.62B5F2D6.Up2Date
 G:\python\fullstack_projects\messenger\client\Messenger.Client\obj\Debug\net8.0\Messenger.Client.genruntimeconfig.cache
 G:\python\fullstack_projects\messenger\client\Messenger.Client\obj\Debug\net8.0\ref\Messenger.Client.dll
+G:\python\fullstack_projects\messenger\client\Messenger.Client\obj\Debug\net8.0\Messenger.Client.sourcelink.json

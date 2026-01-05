@@ -46,6 +46,32 @@ async def _chat_to_out(db: AsyncSession, *, current_user_id: int, chat_id: int) 
     return ChatOut(id=str(chat_id), created_at=chat.created_at, members=members)
 
 
+@router.get("/dialogs", response_model=list[DialogListItem])
+async def list_dialogs(
+    current: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> list[DialogListItem]:
+    chats = await chat_service.list_dialogs(db, user_id=current.id)
+    out: list[DialogListItem] = []
+    for chat in chats:
+        # last message
+        res = await db.execute(
+            select(Message).where(Message.chat_id == chat.id, Message.is_deleted.is_(False)).order_by(Message.created_at.desc()).limit(1)
+        )
+        last = res.scalar_one_or_none()
+        unread = await chat_service.unread_count(db, user_id=current.id, chat_id=chat.id)
+        chat_out = await _chat_to_out(db, current_user_id=current.id, chat_id=chat.id)
+        out.append(
+            DialogListItem(
+                chat=chat_out,
+                last_message_preview=(last.content_text[:80] if last and last.content_text else None),
+                last_message_at=(last.created_at if last else None),
+                unread_count=unread,
+            )
+        )
+    return out
+
+
 @router.get("/{chat_id}", response_model=ChatOut)
 async def get_chat(
     chat_id: int,
@@ -80,32 +106,6 @@ async def create_dialog_by_email(
         return await _chat_to_out(db, current_user_id=current.id, chat_id=chat.id)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
-
-
-@router.get("/dialogs", response_model=list[DialogListItem])
-async def list_dialogs(
-    current: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db),
-) -> list[DialogListItem]:
-    chats = await chat_service.list_dialogs(db, user_id=current.id)
-    out: list[DialogListItem] = []
-    for chat in chats:
-        # last message
-        res = await db.execute(
-            select(Message).where(Message.chat_id == chat.id, Message.is_deleted.is_(False)).order_by(Message.created_at.desc()).limit(1)
-        )
-        last = res.scalar_one_or_none()
-        unread = await chat_service.unread_count(db, user_id=current.id, chat_id=chat.id)
-        chat_out = await _chat_to_out(db, current_user_id=current.id, chat_id=chat.id)
-        out.append(
-            DialogListItem(
-                chat=chat_out,
-                last_message_preview=(last.content_text[:80] if last and last.content_text else None),
-                last_message_at=(last.created_at if last else None),
-                unread_count=unread,
-            )
-        )
-    return out
 
 
 @router.post("/dialogs/by-username", response_model=ChatOut)

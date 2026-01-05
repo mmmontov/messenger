@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Messenger.Client.Models;
+using Messenger.Client.Services;
 
 namespace Messenger.Client.Stores;
 
@@ -68,10 +69,25 @@ public sealed class ChatStore
         if (!_messagesByChat.TryGetValue(chatId, out var list)) return;
         var msg = list.FirstOrDefault(m => m.Id == messageId);
         if (msg is null) return;
-        var deleted = msg with { IsDeleted = true };
-        var idx = list.IndexOf(msg);
-        list[idx] = deleted;
+        list.Remove(msg);
         MessagesChanged?.Invoke(chatId);
+    }
+
+    public async Task DeleteMessageAsync(Message message, WebSocketService ws)
+    {
+        var deleteMessage = new { type = "delete_message", message_id = message.Id };
+        await ws.SendJson(deleteMessage);
+        // Удаляем сразу из UI
+        var chatIdStr = message.ChatId.ToString();
+        if (_messagesByChat.TryGetValue(chatIdStr, out var list))
+        {
+            var msg = list.FirstOrDefault(m => m.Id == message.Id);
+            if (msg != null)
+            {
+                list.Remove(msg);
+                MessagesChanged?.Invoke(chatIdStr);
+            }
+        }
     }
 }
 

@@ -127,29 +127,29 @@ async def edit_message(
         raise HTTPException(status_code=code, detail=str(e))
 
 
-@router.delete("/{message_id}", response_model=MessageOut)
+@router.delete("/{message_id}", response_model=dict)
 async def delete_message(
     message_id: int,
     payload: DeleteMessageRequest,
     current: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-) -> MessageOut:
+) -> dict:
     try:
-        msg = await message_service.delete_message(
+        result = await message_service.delete_message(
             db, message_id=message_id, user_id=current.id, for_everyone=payload.for_everyone
         )
         
         # Уведомляем участников чата об удалении
-        member_ids = await chat_service.list_member_ids(db, chat_id=msg.chat_id)
+        member_ids = await chat_service.list_member_ids(db, chat_id=result["chat_id"])
         payload_ws = {
             "type": "message.deleted",
-            "message_id": msg.id,
-            "chat_id": msg.chat_id,
+            "message_id": message_id,
+            "chat_id": result["chat_id"],
             "for_everyone": payload.for_everyone,
         }
         await ws_manager.broadcast_to_users(member_ids, payload_ws)
         
-        return _message_to_out(msg)
+        return result
     except ValueError as e:
         code = status.HTTP_403_FORBIDDEN if str(e) == "Forbidden" else status.HTTP_400_BAD_REQUEST
         raise HTTPException(status_code=code, detail=str(e))

@@ -1,7 +1,8 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:utils="clr-namespace:Messenger.Client.Utils"
-             x:Class="Messenger.Client.Views.ChatView">
+             x:Class="Messenger.Client.Views.ChatView"
+             x:Name="Root">
   <UserControl.Resources>
     <utils:BoolToStringConverter x:Key="BoolToStringConverter" />
   </UserControl.Resources>
@@ -52,8 +53,8 @@
                       IsVisible="False">
                 <Border.ContextMenu>
                   <ContextMenu>
-                    <MenuItem Header="Edit" Command="{Binding EditCommand}" CommandParameter="{Binding}" />
-                    <MenuItem Header="Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding}" />
+                    <MenuItem Header="Edit" Click="OnEditClicked" />
+                    <MenuItem Header="Delete" Click="OnDeleteClicked" />
                   </ContextMenu>
                 </Border.ContextMenu>
                 <StackPanel>
