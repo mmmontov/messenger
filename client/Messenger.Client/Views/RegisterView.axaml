@@ -1,0 +1,30 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Messenger.Client.Views.RegisterView">
+  <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" Margin="32" MaxWidth="400" 
+        HorizontalAlignment="Center" VerticalAlignment="Center">
+    <TextBlock Text="Create Account" FontSize="28" FontWeight="SemiBold" 
+               Foreground="#212121" HorizontalAlignment="Center" Margin="0,0,0,24"/>
+    <TextBox Grid.Row="1" Watermark="Email" Text="{Binding Email}" 
+             Margin="0,0,0,12" Padding="12,10" Background="White" 
+             BorderBrush="#E5E5E5" BorderThickness="1" />
+    <TextBox Grid.Row="2" Watermark="Username" Text="{Binding Username}" 
+             Margin="0,0,0,12" Padding="12,10" Background="White" 
+             BorderBrush="#E5E5E5" BorderThickness="1" />
+    <TextBox Grid.Row="3" Watermark="Password" Text="{Binding Password}" 
+             PasswordChar="●" Margin="0,0,0,12" Padding="12,10" 
+             Background="White" BorderBrush="#E5E5E5" BorderThickness="1" />
+    <TextBlock Grid.Row="4" Text="{Binding Error}" Foreground="#E53935" 
+               Margin="0,0,0,16" TextWrapping="Wrap" FontSize="13" />
+    <StackPanel Grid.Row="5" Orientation="Horizontal" Spacing="12" 
+                HorizontalAlignment="Center">
+      <Button Content="Create account" Command="{Binding RegisterCommand}" 
+              Width="140" Height="44" Background="#0088CC" Foreground="White" 
+              FontSize="15" FontWeight="SemiBold" />
+      <Button Content="Back to login" Command="{Binding GoLoginCommand}" 
+              Width="140" Height="44" Background="Transparent" 
+              Foreground="#0088CC" BorderBrush="#0088CC" BorderThickness="1"
+              FontSize="15" />
+    </StackPanel>
+  </Grid>
+</UserControl>

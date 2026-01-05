@@ -1,0 +1,47 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Messenger.Client.Views.SettingsView">
+  <Grid RowDefinitions="Auto,*">
+    <!-- Header -->
+    <Border Grid.Row="0" Background="#FFFFFF" BorderBrush="#E5E5E5" BorderThickness="0,0,0,1" Padding="16">
+      <Grid ColumnDefinitions="Auto,*,Auto">
+        <Button Grid.Column="0" Content="← Back" Command="{Binding BackCommand}" 
+                Width="80" Height="40" Background="Transparent" Foreground="#0088CC" />
+        <TextBlock Grid.Column="1" Text="Settings" FontSize="20" FontWeight="SemiBold" 
+                   Foreground="#212121" VerticalAlignment="Center" HorizontalAlignment="Center" />
+        <Button Grid.Column="2" Content="Save" Command="{Binding SaveCommand}" 
+                Width="80" Height="40" Background="#0088CC" Foreground="White" />
+      </Grid>
+    </Border>
+
+    <!-- Content -->
+    <ScrollViewer Grid.Row="1" Padding="24" Background="#F8F8F8">
+      <StackPanel Spacing="16" MaxWidth="600" HorizontalAlignment="Center">
+        <TextBlock Text="{Binding Error}" Foreground="#E53935" TextWrapping="Wrap" 
+                   FontSize="13" Margin="0,0,0,8" />
+        
+        <Border Background="White" Padding="20" CornerRadius="8" BorderBrush="#E5E5E5" BorderThickness="1">
+          <StackPanel Spacing="16">
+            <TextBlock Text="Notifications" FontSize="18" FontWeight="SemiBold" 
+                       Foreground="#212121" Margin="0,0,0,8" />
+            
+            <CheckBox Content="Enable notifications" IsChecked="{Binding NotificationsEnabled}"
+                      FontSize="15" Foreground="#212121" />
+            
+            <CheckBox Content="Notification sound" IsChecked="{Binding NotificationSound}"
+                      FontSize="15" Foreground="#212121" Margin="0,8,0,0" />
+            
+            <CheckBox Content="Show banner" IsChecked="{Binding ShowBanner}"
+                      FontSize="15" Foreground="#212121" Margin="0,8,0,0" />
+          </StackPanel>
+        </Border>
+
+        <Border Background="White" Padding="20" CornerRadius="8" BorderBrush="#E5E5E5" BorderThickness="1">
+          <Button Content="Logout" Command="{Binding LogoutCommand}" 
+                  Width="200" Height="44" Background="#E53935" Foreground="White" 
+                  FontSize="15" FontWeight="SemiBold" HorizontalAlignment="Center" />
+        </Border>
+      </StackPanel>
+    </ScrollViewer>
+  </Grid>
+</UserControl>

@@ -1,0 +1,67 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Messenger.Client.Views.ProfileView">
+  <Grid RowDefinitions="Auto,*">
+    <!-- Header -->
+    <Border Grid.Row="0" Background="#FFFFFF" BorderBrush="#E5E5E5" BorderThickness="0,0,0,1" Padding="16">
+      <Grid ColumnDefinitions="Auto,*,Auto">
+        <Button Grid.Column="0" Content="← Back" Command="{Binding BackCommand}" 
+                Width="80" Height="40" Background="Transparent" Foreground="#0088CC" />
+        <TextBlock Grid.Column="1" Text="Profile" FontSize="20" FontWeight="SemiBold" 
+                   Foreground="#212121" VerticalAlignment="Center" HorizontalAlignment="Center" />
+        <Button Grid.Column="2" Content="Save" Command="{Binding SaveCommand}" 
+                Width="80" Height="40" Background="#0088CC" Foreground="White" />
+      </Grid>
+    </Border>
+
+    <!-- Content -->
+    <ScrollViewer Grid.Row="1" Padding="24" Background="#F8F8F8">
+      <StackPanel Spacing="16" MaxWidth="600" HorizontalAlignment="Center">
+        <TextBlock Text="{Binding Error}" Foreground="#E53935" TextWrapping="Wrap" 
+                   FontSize="13" Margin="0,0,0,8" />
+        
+        <Border Background="White" Padding="20" CornerRadius="8" BorderBrush="#E5E5E5" BorderThickness="1">
+          <StackPanel Spacing="16">
+            <TextBlock Text="Avatar" FontSize="14" FontWeight="SemiBold" 
+                       Foreground="#707579" />
+            <Grid ColumnDefinitions="Auto,*">
+              <Border Grid.Column="0" Width="80" Height="80" CornerRadius="40" 
+                      Background="#0088CC" Margin="0,0,16,0">
+                <Grid>
+                  <Image x:Name="AvatarImage" Source="{Binding AvatarPath}" 
+                         Stretch="UniformToFill" />
+                  <TextBlock x:Name="AvatarText" Text="?" 
+                             FontSize="32" FontWeight="SemiBold" Foreground="White" 
+                             VerticalAlignment="Center" HorizontalAlignment="Center" />
+                </Grid>
+              </Border>
+              <Button Grid.Column="1" Content="Upload Avatar" 
+                      Command="{Binding UploadAvatarCommand}" 
+                      HorizontalAlignment="Left" VerticalAlignment="Center"
+                      Width="150" Background="#0088CC" Foreground="White" />
+            </Grid>
+          </StackPanel>
+        </Border>
+
+        <Border Background="White" Padding="20" CornerRadius="8" BorderBrush="#E5E5E5" BorderThickness="1">
+          <StackPanel Spacing="16">
+            <TextBlock Text="Username" FontSize="14" FontWeight="SemiBold" 
+                       Foreground="#707579" />
+            <TextBox Text="{Binding Username}" Padding="12,10" 
+                     Background="#F8F8F8" BorderBrush="#E5E5E5" BorderThickness="1" />
+          </StackPanel>
+        </Border>
+
+        <Border Background="White" Padding="20" CornerRadius="8" BorderBrush="#E5E5E5" BorderThickness="1">
+          <StackPanel Spacing="16">
+            <TextBlock Text="Bio" FontSize="14" FontWeight="SemiBold" 
+                       Foreground="#707579" />
+            <TextBox Text="{Binding Bio}" AcceptsReturn="True" Height="120" 
+                     TextWrapping="Wrap" Padding="12,10" 
+                     Background="#F8F8F8" BorderBrush="#E5E5E5" BorderThickness="1" />
+          </StackPanel>
+        </Border>
+      </StackPanel>
+    </ScrollViewer>
+  </Grid>
+</UserControl>

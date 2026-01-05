@@ -1,0 +1,96 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:utils="clr-namespace:Messenger.Client.Utils"
+             x:Class="Messenger.Client.Views.ChatView">
+  <UserControl.Resources>
+    <utils:BoolToStringConverter x:Key="BoolToStringConverter" />
+  </UserControl.Resources>
+  <Grid RowDefinitions="Auto,*,Auto">
+    <!-- Header -->
+    <Border Grid.Row="0" Background="#FFFFFF" BorderBrush="#E5E5E5" BorderThickness="0,0,0,1" Padding="12">
+      <Grid ColumnDefinitions="Auto,*,Auto">
+        <Button Grid.Column="0" Content="←" Command="{Binding BackCommand}" 
+                Width="40" Height="40" Margin="0,0,12,0" 
+                Background="Transparent" Foreground="#0088CC" FontSize="20" />
+        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+          <TextBlock Text="{Binding ChatTitle}" 
+                     FontSize="17" FontWeight="SemiBold" Foreground="#212121" />
+          <TextBlock Text="{Binding ChatStatus}" 
+                     FontSize="13" Foreground="#707579" />
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <!-- Messages -->
+    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Background="#E5E5E5" x:Name="MessagesScroll">
+      <ItemsControl x:Name="MessagesList" ItemsSource="{Binding Messages}" Margin="8">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <Grid Margin="0,4" Loaded="OnMessageGridLoaded">
+              <!-- Other's message on the left -->
+              <Border x:Name="OtherMessage" HorizontalAlignment="Left" Padding="12,8" CornerRadius="12" 
+                      MaxWidth="400" Margin="0,0,60,0"
+                      Background="White" BorderBrush="#E5E5E5" BorderThickness="1"
+                      IsVisible="True">
+                <StackPanel>
+                  <TextBlock Text="{Binding ContentText}" TextWrapping="Wrap" 
+                             Foreground="#212121" FontSize="15" />
+                  <Grid ColumnDefinitions="*,Auto" Margin="0,4,0,0">
+                    <TextBlock Grid.Column="0" Text="{Binding CreatedAt, StringFormat='HH:mm'}" 
+                               FontSize="12" Foreground="#999999" />
+                    <TextBlock Grid.Column="1" Text="(edited)" FontSize="11" 
+                               Foreground="#999999" Margin="4,0,0,0"
+                               IsVisible="{Binding EditedAt, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                  </Grid>
+                </StackPanel>
+              </Border>
+              
+              <!-- My message on the right -->
+              <Border x:Name="MyMessage" HorizontalAlignment="Right" Padding="12,8" CornerRadius="12" 
+                      MaxWidth="400" Margin="60,0,0,0"
+                      Background="#DCF8C6" BorderBrush="#B8E994" BorderThickness="1"
+                      IsVisible="False">
+                <Border.ContextMenu>
+                  <ContextMenu>
+                    <MenuItem Header="Edit" Command="{Binding EditCommand}" CommandParameter="{Binding}" />
+                    <MenuItem Header="Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding}" />
+                  </ContextMenu>
+                </Border.ContextMenu>
+                <StackPanel>
+                  <TextBlock Text="{Binding ContentText}" TextWrapping="Wrap" 
+                             Foreground="#212121" FontSize="15" />
+                  <Grid ColumnDefinitions="*,Auto" Margin="0,4,0,0">
+                    <TextBlock Grid.Column="0" Text="{Binding CreatedAt, StringFormat='HH:mm'}" 
+                               FontSize="12" Foreground="#999999" />
+                    <TextBlock Grid.Column="1" Text="(edited)" FontSize="11" 
+                               Foreground="#999999" Margin="4,0,0,0"
+                               IsVisible="{Binding EditedAt, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                  </Grid>
+                </StackPanel>
+              </Border>
+            </Grid>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </ScrollViewer>
+
+    <!-- Input -->
+    <Border Grid.Row="2" Background="#FFFFFF" BorderBrush="#E5E5E5" BorderThickness="0,1,0,0" Padding="12">
+      <Grid RowDefinitions="Auto,*" ColumnDefinitions="*,Auto,Auto">
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" 
+                   Text="Editing message..." FontSize="12" Foreground="#0088CC" 
+                   IsVisible="{Binding IsEditing}" Margin="0,0,0,4" />
+        <TextBox Grid.Row="1" Grid.Column="0" Text="{Binding Text}" 
+                 Watermark="{Binding IsEditing, Converter={StaticResource BoolToStringConverter}, ConverterParameter='Edit your message...|Type a message...'}" 
+                 KeyDown="OnKeyDown" Background="#F8F8F8" BorderBrush="#E5E5E5" 
+                 Padding="12,10" />
+        <Button Grid.Row="1" Grid.Column="1" Content="{Binding IsEditing, Converter={StaticResource BoolToStringConverter}, ConverterParameter='Save|Send'}" 
+                Command="{Binding SendCommand}" 
+                Width="80" Margin="8,0,0,0" Background="#0088CC" Foreground="White" />
+        <Button Grid.Row="1" Grid.Column="2" Content="Cancel" Command="{Binding CancelEditCommand}" 
+                Width="80" Margin="8,0,0,0" Background="#FF4444" Foreground="White" 
+                IsVisible="{Binding IsEditing}" />
+      </Grid>
+    </Border>
+  </Grid>
+</UserControl>

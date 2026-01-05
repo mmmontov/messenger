@@ -1,0 +1,32 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="clr-namespace:Messenger.Client.Views"
+             xmlns:vms="clr-namespace:Messenger.Client.ViewModels"
+             x:Class="Messenger.Client.App">
+  <Application.Styles>
+    <FluentTheme />
+  </Application.Styles>
+
+  <Application.DataTemplates>
+    <DataTemplate DataType="{x:Type vms:LoginViewModel}">
+      <views:LoginView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vms:RegisterViewModel}">
+      <views:RegisterView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vms:ChatListViewModel}">
+      <views:ChatListView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vms:ChatViewModel}">
+      <views:ChatView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vms:ProfileViewModel}">
+      <views:ProfileView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vms:SettingsViewModel}">
+      <views:SettingsView />
+    </DataTemplate>
+  </Application.DataTemplates>
+</Application>
+
+
