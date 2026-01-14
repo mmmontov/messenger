@@ -17,7 +17,23 @@ public partial class App : Application
 
     public override void Initialize()
     {
-        AvaloniaXamlLoader.Load(this);
+        try
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
+        catch (Avalonia.Markup.Xaml.XamlLoadException)
+        {
+            var path = System.IO.Path.Combine(AppContext.BaseDirectory, "App.axaml");
+            if (System.IO.File.Exists(path))
+            {
+                using var stream = System.IO.File.OpenRead(path);
+                AvaloniaXamlLoader.Load(stream);
+            }
+            else
+            {
+                throw;
+            }
+        }
     }
 
     public override void OnFrameworkInitializationCompleted()

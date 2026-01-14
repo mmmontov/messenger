@@ -4,4 +4,8 @@
 
 /backend/media
 
+client/Messenger.Client/bin
+client/Messenger.Client/obj
 app.db
+
+*.pyc
