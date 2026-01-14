@@ -7,8 +7,8 @@
       <Grid ColumnDefinitions="*,Auto,Auto">
         <TextBlock Grid.Column="0" Text="Messenger" FontSize="24" FontWeight="SemiBold" 
                    Foreground="#212121" VerticalAlignment="Center" />
-        <CheckBox Grid.Column="1" Content="Уведомления" IsChecked="{Binding NotificationsEnabled}" 
-                  Command="{Binding ToggleNotificationsCommand}" Margin="0,0,12,0" />
+        <CheckBox Grid.Column="1" Content="Звук уведомлений" IsChecked="{Binding NotificationSound}" 
+                  Margin="0,0,12,0" />
         <Button Grid.Column="2" Content="Профиль" Command="{Binding OpenProfileCommand}" 
                 Background="Transparent" Foreground="#0088CC" 
                 BorderBrush="#E5E5E5" BorderThickness="1" Padding="12,6" />

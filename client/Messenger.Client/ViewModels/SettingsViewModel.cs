@@ -12,9 +12,10 @@ public sealed class SettingsViewModel : ViewModelBase
     private readonly IServiceProvider _sp;
     private readonly AuthService _auth;
     private readonly WebSocketService _ws;
+    private readonly UserStore _userStore;
 
     private bool _notificationsEnabled = true;
-    public bool NotificationsEnabled { get => _notificationsEnabled; set => SetField(ref _notificationsEnabled, value); }
+    public bool NotificationsEnabled { get => _notificationsEnabled; set { if (SetField(ref _notificationsEnabled, value)) { if (!value) { NotificationSound = false; ShowBanner = false; } } } }
 
     private bool _notificationSound = true;
     public bool NotificationSound { get => _notificationSound; set => SetField(ref _notificationSound, value); }
@@ -30,13 +31,14 @@ public sealed class SettingsViewModel : ViewModelBase
     public RelayCommand SaveCommand { get; }
     public RelayCommand LogoutCommand { get; }
 
-    public SettingsViewModel(ApiService api, NavigationStore nav, IServiceProvider sp, AuthService auth, WebSocketService ws)
+    public SettingsViewModel(ApiService api, NavigationStore nav, IServiceProvider sp, AuthService auth, WebSocketService ws, UserStore userStore)
     {
         _api = api;
         _nav = nav;
         _sp = sp;
         _auth = auth;
         _ws = ws;
+        _userStore = userStore;
 
         BackCommand = new RelayCommand(async (_) => _nav.CurrentViewModel = (ViewModelBase)_sp.GetService(typeof(ChatListViewModel))!);
         LoadCommand = new RelayCommand(async (_) => await Load());
@@ -72,6 +74,8 @@ public sealed class SettingsViewModel : ViewModelBase
             NotificationsEnabled = me.Settings.NotificationsEnabled;
             NotificationSound = me.Settings.NotificationSound;
             ShowBanner = me.Settings.ShowBanner;
+            _userStore.NotificationsEnabled = NotificationsEnabled;
+            _userStore.NotificationSound = NotificationSound;
         }
         catch (Exception ex)
         {

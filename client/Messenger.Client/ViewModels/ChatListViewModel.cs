@@ -28,6 +28,8 @@ public sealed class ChatListViewModel : ViewModelBase
     private bool _notificationsEnabled = true;
     public bool NotificationsEnabled { get => _userStore.NotificationsEnabled; set { _userStore.NotificationsEnabled = value; RaisePropertyChanged(); } }
 
+    public bool NotificationSound { get => _userStore.NotificationSound; set { _userStore.NotificationSound = value; RaisePropertyChanged(); } }
+
     public RelayCommand RefreshCommand { get; }
     public RelayCommand OpenProfileCommand { get; }
     public RelayCommand StartChatCommand { get; }
@@ -45,7 +47,7 @@ public sealed class ChatListViewModel : ViewModelBase
         RefreshCommand = new RelayCommand(async (_) => await LoadDialogs());
         OpenProfileCommand = new RelayCommand(async (_) => _nav.CurrentViewModel = (ViewModelBase)_sp.GetService(typeof(ProfileViewModel))!);
         StartChatCommand = new RelayCommand(async (_) => await StartChat());
-        ToggleNotificationsCommand = new RelayCommand(async (_) => NotificationsEnabled = !NotificationsEnabled);
+        ToggleNotificationsCommand = new RelayCommand(async (_) => NotificationSound = !NotificationSound);
 
         // Подписываемся на события с дебаунсингом
         _chatStore.DialogsChanged += DebouncedLoadDialogs;
