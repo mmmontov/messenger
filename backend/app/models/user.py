@@ -33,8 +33,7 @@ class User(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     last_seen_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
 
-    # В async SQLAlchemy нельзя полагаться на lazy-load (даёт MissingGreenlet).
-    # Поэтому используем eager loading (selectin) по умолчанию.
+
     settings: Mapped["UserSettings"] = relationship(
         back_populates="user", uselist=False, cascade="all, delete-orphan", lazy="selectin"
     )

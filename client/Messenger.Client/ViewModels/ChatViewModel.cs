@@ -52,7 +52,11 @@ public sealed class ChatViewModel : ViewModelBase
         _chatStore = chatStore;
         _userStore = userStore;
 
-        BackCommand = new RelayCommand(async (_) => _nav.CurrentViewModel = (ViewModelBase)_sp.GetService(typeof(ChatListViewModel))!);
+        BackCommand = new RelayCommand(async (_) => 
+        {
+            _chatStore.SetActiveChat(null);
+            _nav.CurrentViewModel = (ViewModelBase)_sp.GetService(typeof(ChatListViewModel))!;
+        });
 
         SendCommand = new RelayCommand(async (_) => await SendMessage());
 
@@ -67,7 +71,9 @@ public sealed class ChatViewModel : ViewModelBase
             if (param is not Message message || message.SenderId != _userStore.Me?.Id) return;
             try
             {
-                await _chatStore.DeleteMessageAsync(message, _ws);
+                await _api.Delete<object>($"/messages/{message.Id}", new { });
+                // Удалить сообщение локально из UI сразу
+                Messages.Remove(message);
             }
             catch (Exception ex)
             {

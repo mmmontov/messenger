@@ -62,7 +62,8 @@ async def save_upload(category: str, upload: UploadFile) -> StoredFile:
             await f.write(chunk)
 
     mime = upload.content_type or mimetypes.guess_type(safe_name)[0] or "application/octet-stream"
-    rel = str(dest_path.as_posix())
+    # relative_path относительно media_root
+    rel = str(dest_path.relative_to(settings.media_root))
     return StoredFile(relative_path=rel, file_name=safe_name, file_size=size, mime_type=mime)
 
 

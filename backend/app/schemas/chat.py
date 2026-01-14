@@ -38,6 +38,5 @@ class DialogListItem(BaseModel):
     chat: ChatOut
     last_message_preview: Optional[str] = None
     last_message_at: Optional[datetime] = None
-    unread_count: int
 
 

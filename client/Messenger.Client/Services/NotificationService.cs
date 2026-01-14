@@ -15,7 +15,21 @@ public sealed class NotificationService
     public void ShowNotification(string title, string body, int chatId)
     {
         Show(title, body);
+        PlayNotificationSound();
         // Здесь можно добавить логику показа системных уведомлений
+    }
+
+    public void PlayNotificationSound()
+    {
+        try
+        {
+            // Для Windows используем System.Media.SystemSounds
+            System.Media.SystemSounds.Beep.Play();
+        }
+        catch
+        {
+            // Fallback - ничего не делаем
+        }
     }
 }
 

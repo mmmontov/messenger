@@ -7,7 +7,7 @@ public sealed record ChatMember(int UserId, string Username, string? AvatarPath,
 
 public sealed record Chat(string Id, DateTime CreatedAt, IReadOnlyList<ChatMember> Members);
 
-public sealed record DialogListItem(Chat Chat, string? LastMessagePreview, DateTime? LastMessageAt, int UnreadCount)
+public sealed record DialogListItem(Chat Chat, string? LastMessagePreview, DateTime? LastMessageAt)
 {
     public ChatMember? GetOtherMember(int currentUserId)
     {

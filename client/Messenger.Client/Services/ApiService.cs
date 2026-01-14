@@ -108,6 +108,11 @@ public sealed class ApiService
         if (string.IsNullOrEmpty(relativePath)) return "";
         // Убираем префикс "backend/" если есть
         var cleanPath = relativePath.Replace("backend/", "").Replace("\\", "/");
+        // Убираем ведущий "media/" если есть, чтобы избежать двойного
+        if (cleanPath.StartsWith("media/"))
+        {
+            cleanPath = cleanPath.Substring("media/".Length);
+        }
         return $"{_baseUrl}/media/{cleanPath}";
     }
 

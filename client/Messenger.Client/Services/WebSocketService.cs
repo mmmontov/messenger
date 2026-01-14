@@ -116,8 +116,8 @@ public sealed class WebSocketService
                     _chatStore.AddMessage(msg);
                     DialogUpdated?.Invoke(msg.ChatId.ToString());
                     
-                    // Показываем уведомление, если сообщение не от нас и мы не в этом чате
-                    if (msg.SenderId != _userStore.Me?.Id && _chatStore.ActiveChatId != msg.ChatId.ToString())
+                    // Показываем уведомление, если сообщение не от нас и мы не в этом чате и уведомления включены
+                    if (msg.SenderId != _userStore.Me?.Id && _chatStore.ActiveChatId != msg.ChatId.ToString() && _userStore.NotificationsEnabled)
                     {
                         var chat = _chatStore.Dialogs.FirstOrDefault(d => d.Chat.Id == msg.ChatId.ToString());
                         var senderName = chat?.Chat.Members.FirstOrDefault(mem => mem.UserId == msg.SenderId)?.Username ?? "Someone";

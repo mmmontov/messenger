@@ -25,9 +25,13 @@ public sealed class ChatListViewModel : ViewModelBase
     private string _error = "";
     public string Error { get => _error; set => SetField(ref _error, value); }
 
+    private bool _notificationsEnabled = true;
+    public bool NotificationsEnabled { get => _userStore.NotificationsEnabled; set { _userStore.NotificationsEnabled = value; RaisePropertyChanged(); } }
+
     public RelayCommand RefreshCommand { get; }
     public RelayCommand OpenProfileCommand { get; }
     public RelayCommand StartChatCommand { get; }
+    public RelayCommand ToggleNotificationsCommand { get; }
 
     public ChatListViewModel(ApiService api, NavigationStore nav, IServiceProvider sp, ChatStore chatStore, WebSocketService ws, UserStore userStore)
     {
@@ -41,6 +45,7 @@ public sealed class ChatListViewModel : ViewModelBase
         RefreshCommand = new RelayCommand(async (_) => await LoadDialogs());
         OpenProfileCommand = new RelayCommand(async (_) => _nav.CurrentViewModel = (ViewModelBase)_sp.GetService(typeof(ProfileViewModel))!);
         StartChatCommand = new RelayCommand(async (_) => await StartChat());
+        ToggleNotificationsCommand = new RelayCommand(async (_) => NotificationsEnabled = !NotificationsEnabled);
 
         // Подписываемся на события с дебаунсингом
         _chatStore.DialogsChanged += DebouncedLoadDialogs;
@@ -128,9 +133,8 @@ public sealed class ChatListViewModel : ViewModelBase
         [JsonPropertyName("chat")] public ChatDto Chat { get; set; } = new();
         [JsonPropertyName("last_message_preview")] public string? LastMessagePreview { get; set; }
         [JsonPropertyName("last_message_at")] public DateTime? LastMessageAt { get; set; }
-        [JsonPropertyName("unread_count")] public int UnreadCount { get; set; }
 
-        public DialogListItem ToModel() => new(Chat.ToModel(), LastMessagePreview, LastMessageAt, UnreadCount);
+        public DialogListItem ToModel() => new(Chat.ToModel(), LastMessagePreview, LastMessageAt);
     }
 
     public ChatMember? GetOtherMember(DialogListItem item)

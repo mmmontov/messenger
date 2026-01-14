@@ -23,7 +23,7 @@ from app.services.message_service import message_service
 router = APIRouter(prefix="/messages", tags=["messages"])
 
 
-def _message_to_out(msg) -> MessageOut:
+async def _message_to_out(msg) -> MessageOut:
     return MessageOut(
         id=msg.id,
         chat_id=msg.chat_id,
@@ -60,7 +60,10 @@ async def list_messages(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
     msgs = await message_service.list_messages(db, chat_id=chat_id, limit=limit, offset=offset)
     # Возвращаем в порядке created_at ASC для UI
-    return [_message_to_out(m) for m in reversed(msgs)]
+    result = []
+    for m in reversed(msgs):
+        result.append(await _message_to_out(m))
+    return result
 
 
 @router.post("/text", response_model=MessageOut)
@@ -93,7 +96,7 @@ async def send_text(
         }
         await ws_manager.broadcast_to_users(member_ids, payload_ws)
         
-        return _message_to_out(msg)
+        return await _message_to_out(msg)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
@@ -121,7 +124,7 @@ async def edit_message(
         }
         await ws_manager.broadcast_to_users(member_ids, payload_ws)
         
-        return _message_to_out(msg)
+        return await _message_to_out(msg)
     except ValueError as e:
         code = status.HTTP_403_FORBIDDEN if str(e) == "Forbidden" else status.HTTP_400_BAD_REQUEST
         raise HTTPException(status_code=code, detail=str(e))
@@ -184,45 +187,6 @@ async def update_status(
             )
         
         return {"ok": True, "message_id": ms.message_id, "user_id": ms.user_id, "status": ms.status.value}
-    except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
-
-
-@router.post("/chat/{chat_id}/mark-read")
-async def mark_chat_read(
-    chat_id: int,
-    current: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db),
-) -> dict:
-    """Отметить все сообщения в чате как прочитанные"""
-    try:
-        await chat_service.get_chat(db, user_id=current.id, chat_id=chat_id)
-        from app.models.message import Message, MessageStatus
-        from sqlalchemy import select, and_
-        
-        # Получаем все непрочитанные сообщения в чате
-        res = await db.execute(
-            select(Message.id)
-            .where(
-                and_(
-                    Message.chat_id == chat_id,
-                    Message.sender_id != current.id,
-                    Message.is_deleted.is_(False),
-                )
-            )
-        )
-        message_ids = [int(x) for x in res.scalars().all()]
-        
-        # Обновляем статусы
-        updated_count = 0
-        for msg_id in message_ids:
-            try:
-                await message_service.mark_status(db, message_id=msg_id, user_id=current.id, status=DeliveryStatus.read)
-                updated_count += 1
-            except ValueError:
-                pass  # Статус уже не существует или уже прочитан
-        
-        return {"ok": True, "updated_count": updated_count}
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 

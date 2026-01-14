@@ -27,15 +27,3 @@ class PasswordResetConfirmRequest(BaseModel):
     new_password: str = Field(min_length=8, max_length=72)
 
 
-class PasswordResetTokenInfo(BaseModel):
-    token: str
-    expires_at: datetime
-
-
-class AuthUser(BaseModel):
-    id: int
-    email: EmailStr
-    username: str
-    avatar_path: Optional[str] = None
-
-

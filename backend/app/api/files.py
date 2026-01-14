@@ -96,7 +96,7 @@ async def download_file(
     if not f:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not found")
 
-    # Проверяем, что пользователь участник чата сообщения.
+    # Проверяем, что пользователь участник чата сообщения
     # (file -> message_id -> message.chat_id)
     from app.models.message import Message
 

@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     allowed_origins: list[str] = ["*"]
 
     # Database
-    sqlite_path: str = Field(default="backend/app.db")
+    sqlite_path: str = Field(default="app.db")
     db_echo: bool = False
 
     # Security / JWT
@@ -58,7 +58,8 @@ class Settings(BaseSettings):
     def sqlite_dsn(self) -> str:
         # aiosqlite + SQLAlchemy async engine
         # NB: абсолютный путь в Windows безопаснее, но оставляем относительный для учебного проекта.
-        return f"sqlite+aiosqlite:///{self.sqlite_path}"
+        import os
+        return f"sqlite+aiosqlite:///{os.path.abspath(self.sqlite_path)}"
 
 
 settings = Settings()

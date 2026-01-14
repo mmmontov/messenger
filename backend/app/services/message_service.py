@@ -42,7 +42,9 @@ class MessageService:
         db.add_all(statuses)
 
         await db.commit()
-        await db.refresh(msg)
+        # Eager load files
+        res = await db.execute(select(Message).options(selectinload(Message.files)).where(Message.id == msg.id))
+        msg = res.scalar_one()
         return msg
 
     async def attach_file(

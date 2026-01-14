@@ -33,7 +33,7 @@ async def register(
             value=session_id,
             max_age=30 * 24 * 60 * 60,  # 30 дней
             httponly=True,
-            secure=False,  # В продакшене должно быть True для HTTPS
+            secure=False,  
             samesite="lax",
         )
         return {"ok": True, "user_id": user.id, "username": user.username}
@@ -55,7 +55,7 @@ async def login(
             value=session_id,
             max_age=30 * 24 * 60 * 60,  # 30 дней
             httponly=True,
-            secure=False,  # В продакшене должно быть True для HTTPS
+            secure=False, 
             samesite="lax",
         )
         return {"ok": True, "user_id": user.id, "username": user.username}

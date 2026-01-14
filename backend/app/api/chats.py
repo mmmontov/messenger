@@ -66,7 +66,6 @@ async def list_dialogs(
                 chat=chat_out,
                 last_message_preview=(last.content_text[:80] if last and last.content_text else None),
                 last_message_at=(last.created_at if last else None),
-                unread_count=unread,
             )
         )
     return out
@@ -98,8 +97,7 @@ async def create_dialog_by_email(
     db: AsyncSession = Depends(get_db),
 ) -> ChatOut:
     """
-    Создать (или получить) личный диалог по email собеседника.
-    Удобно для UI: пользователь вводит email и сразу открывает чат.
+    Создать (или получить) личный диалог по email собеседника
     """
     try:
         chat = await chat_service.get_or_create_dialog_by_email(db, user_id=current.id, peer_email=str(payload.peer_email))
@@ -115,8 +113,7 @@ async def create_dialog_by_username(
     db: AsyncSession = Depends(get_db),
 ) -> ChatOut:
     """
-    Создать (или получить) личный диалог по username собеседника.
-    Удобно для UI: пользователь вводит username и сразу открывает чат.
+    Создать (или получить) личный диалог по username собеседника
     """
     try:
         chat = await chat_service.get_or_create_dialog_by_username(
@@ -133,7 +130,7 @@ async def search_contacts(
     current: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> list[dict]:
-    # Поиск по username (приоритет) и email. Возвращаем минимальный DTO.
+    # Поиск по username (приоритет) и email
     res = await db.execute(
         select(User)
         .where(User.id != current.id, (User.username.ilike(f"%{q}%")) | (User.email.ilike(f"%{q}%")))
